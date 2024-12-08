@@ -1,0 +1,121 @@
+:root {
+  --themeColor: #4ca85e;
+  --themeColorLight: #78d98b;
+  --themeColorDark: #428f52;
+  --bodyBG: #111111;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+#app {
+  height: 100vh;
+  display: grid; 
+  grid-template-columns: 1fr; 
+  grid-template-rows: 0.2fr 1.8fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "header"
+    "main"; 
+}
+body {
+	/* width: 100%; */
+  
+
+  font-family: "Roboto", sans-serif;
+  background-color: var(--bodyBG);
+  color: #e7e7e7;
+}
+
+main {
+  grid-area: main;
+  overflow: hidden auto;
+  
+  font-weight: lighter;
+  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  /* align-items: flex-start!important; */
+  justify-content: flex-start!important;
+  
+}
+header {
+	display: flex;
+	flex: 1 1 auto;
+	justify-content: space-between;
+  grid-area: header;
+}
+header div {
+	display: flex;
+	flex: 1 1 auto;
+}
+header div:nth-child(1) {
+	/* "logo" container */
+	padding: 8px 8px 8px 14px;
+	flex-direction: column;
+	font-size: 1.8rem;
+  justify-content: center;
+}
+
+header div:nth-child(1) span:nth-child(1) {
+	/* "logo" text */
+	font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--themeColor);
+}
+header div:nth-child(1) span:nth-child(2) {
+	/* "logo" subtile */
+	font-size: 1.2rem;
+  font-weight: lighter;
+  font-style: italic;
+}
+
+header div:nth-child(2) {
+  padding: 8px;
+	justify-content: center;
+	align-items: center;
+}
+header div:nth-last-child(1) {
+  padding: 8px 14px 8px 8px;
+	justify-content: flex-end;
+	align-items: center;
+  font-weight: lighter;
+}
+
+main {
+  display: flex;
+  flex: 1 1 none;
+  justify-content: center;
+  flex-direction: column;
+}
+
+a {
+  color: var(--themeColor);
+}
+a:hover {
+  color: var(--themeColor);
+}
+
+button {
+  background-color: var(--themeColorDark);
+  color: white;
+  border: 3px solid var(--themeColorDark);
+  border-radius: 12px;
+  padding: 8px;
+  transition-duration: 60ms;
+}
+button:hover {
+  background-color: var(--themeColor);
+  border-color: var(--themeColor);
+  /* color: var(--bodyBG); */
+}
+
+pre .hljs {
+  overflow-x: visible!important;
+}
+pre, .hljs {
+  min-height: 100%;
+}
