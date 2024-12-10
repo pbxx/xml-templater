@@ -32,6 +32,25 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 			}
 		}
 	}
+	function getNameAt(rowIndex: number) {
+		if (csvObj.value) {
+			// csv loaded
+			// locate row
+			if (Array.isArray(csvObj.value.data)) {
+				const row = csvObj.value.data[rowIndex]
+				if (Array.isArray(row)) {
+					// thanks typescript
+					// locate column within row
+					const val = row[nameByColumn.value]
+					return val
+				} else {
+					return "csv error in column"
+				}
+			} else {
+				return "csv error in row"
+			}
+		}
+	}
 
 	// const doubleCount = computed(() => count.value * 2)
 	function setCSV(csv: ParseResult<unknown>, text: string) {
@@ -43,17 +62,32 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 		// exampleIndex.value = hasHeaders.value? 1 : 0
 	}
 
-	async function downloadExample() {
+	async function downloadRow(index: number) {
+		// render row
+		const renderedRow = renderXML(index)
+		// download row
 		const link = document.createElement("a")
-		const file = new Blob([exampleRender.value], { type: "text/plain" })
+		const file = new Blob([renderedRow], { type: "text/plain" })
 		link.href = URL.createObjectURL(file)
-		const filename = `config_${filenameRef.value}.xml`
+		const filename = `config_${getNameAt(index)}.xml`
 		link.download = filename
 		link.click()
 
 		URL.revokeObjectURL(link.href)
 		link.remove()
 	}
+	async function downloadExample() {
+		downloadRow(exampleIndex.value)
+	}
+	async function downloadAll() {
+		if (csvObj.value && Array.isArray(csvObj.value.data)) {
+			for (var i=0; i < csvObj.value.data.length; i++) {
+				downloadRow(i)
+			}
+		}
+	}
+
+
 
 	function renderXML(index?: number): string {
 		// render XML at current index with current flow items
@@ -144,5 +178,5 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 		return modified
 	}
 
-	return { xmlText, csvObj, hasHeaders, currentFlowItems, setCSV, setXML, renderXML, exampleRender, exampleIndex, downloadExample }
+	return { xmlText, csvObj, hasHeaders, currentFlowItems, setCSV, setXML, renderXML, exampleRender, exampleIndex, downloadExample, downloadAll }
 })

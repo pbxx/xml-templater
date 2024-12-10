@@ -90,7 +90,7 @@ const flowItems = {
 
             <button @click="flowItems.new">Add flow item</button>
 
-            <button @click="downloadText('This is some awesome content', 'awesome.xml')">Test Downloading Something</button>
+            <button @click="configStore.downloadAll()">Download All</button>
         </div>
         <div class="example pane">
             <Example></Example>
