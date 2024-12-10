@@ -9,12 +9,17 @@ interface Props {
 import { useFlowConfigStore } from "@/stores/flowconfigure"
 const configStore = useFlowConfigStore()
 
+configStore.$subscribe(() => {
+    // update example render anytime the state changes
+    configStore.exampleRender = configStore.renderXML()
+})
+
 const props = defineProps<Props>()
 </script>
 
 <template>
     <div>
-        <highlightjs :code="configStore.xmlText" />
+        <highlightjs :code="configStore.exampleRender" />
     </div>
     <div>
         <table v-if="configStore.csvObj" class="csvTable">
@@ -53,7 +58,7 @@ const props = defineProps<Props>()
     background-color: var(--bodyBG);
     border-radius: 12px;
     transition-duration: 80ms;
-    
+
 }
 .csvTable tr:hover td,
 .csvTable tr:hover th {

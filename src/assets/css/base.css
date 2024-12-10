@@ -5,6 +5,8 @@
   --bodyBG: #111111;
   --codeBG: #090909;
   --borderGray: #2d2d2d;
+  --dangerColor: #8f2525;
+  --dangerColorDark: #551919;
 }
 
 * {
@@ -112,6 +114,19 @@ button {
 button:hover {
   background-color: var(--themeColor);
   border-color: var(--themeColor);
+  /* color: var(--bodyBG); */
+}
+button.danger {
+  background-color: var(--codeBG);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 8px;
+  transition-duration: 60ms;
+}
+button.danger:hover {
+  background-color: var(--dangerColor);
+  border-color: var(--dangerColor);
   /* color: var(--bodyBG); */
 }
 

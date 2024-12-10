@@ -31,8 +31,11 @@ const processFiles = {
         if (files && files.length) {
             const text = await files[0].text()
             configStore.xmlText = text
-            console.log(text)
-            console.log(toRaw(configStore.xmlText))
+            // console.log(text)
+            // console.log(toRaw(configStore.xmlText))
+
+            // render xml
+            configStore.exampleRender = configStore.renderXML()
         }
     },
     csv: async function (e: Event) {
@@ -51,7 +54,7 @@ const flowItems = {
     new: function() {
         configStore.currentFlowItems.push({
             selector: "",
-            operateOn: "id",
+            operateOn: "value",
             action: "replace",
             with: "column",
             column: 0,

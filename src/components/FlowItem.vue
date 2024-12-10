@@ -6,7 +6,7 @@ interface Props {
     index: number
 }
 
-import { useFlowConfigStore } from "@/stores/flowconfigure";
+import { useFlowConfigStore } from "@/stores/flowconfigure"
 const configStore = useFlowConfigStore()
 
 const props = defineProps<Props>()
@@ -14,6 +14,10 @@ const props = defineProps<Props>()
 
 <template>
     <div class="flowItem">
+        <div class="itemHeader">
+            <div class="left">Step {{ props.index + 1 }}</div>
+            <div class="right" @click="configStore.currentFlowItems.splice(props.index, 1)"><button class="danger">Delete</button></div>
+        </div>
         <div class="inputGroup">
             <span>CSS Selector:</span>
             <input type="text" v-model="configStore.currentFlowItems[props.index].selector" />
@@ -57,3 +61,42 @@ const props = defineProps<Props>()
         </div>
     </div>
 </template>
+
+<style scoped>
+.itemHeader {
+    display: flex;
+    justify-content: space-between;
+    background-color: #0c0c0c;
+    background: linear-gradient(0deg, #505050, #727272);
+    position: relative;
+    top: -22px;
+    margin-bottom: -10px;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+.itemHeader button {
+    padding: 0px 8px;
+    border-radius: 4px;
+    color: #727272;
+    cursor: pointer;
+    
+}
+.itemHeader button:hover {
+    padding: 0px 8px;
+    border-radius: 4px;
+    color: white;
+
+}
+
+.itemHeader div.left {
+    /* background-color: var(--borderGray); */
+    padding: 0px 8px;
+    border-radius: 4px;
+    font-size: .9rem;
+    font-weight: bold;
+}
+.itemHeader div.right {
+    display: flex;
+    padding: 2px;
+}
+</style>

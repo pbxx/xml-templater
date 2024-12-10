@@ -1,7 +1,7 @@
 .flowItem {
 	display: flex;
 	flex-direction: column;
-    border: 1px solid var(--themeColorDark);
+    border: 1px solid var(--borderGray);
     border-radius: 4px;
     padding: 12px 18px;
     
