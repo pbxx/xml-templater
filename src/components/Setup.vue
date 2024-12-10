@@ -2,21 +2,18 @@
 import { ref, toRaw} from "vue"
 import Papa, { type ParseResult } from "papaparse"
 
-interface FlowItem {
-    selector: string
-    operateOn: "value" | "id" | "name"
-    action: "replace" | "remove"
-    with: "column" | "dt" | "static"
-    column?: number
-    value?: string
-    dtformat?: string
+import FlowItem from "./FlowItem.vue"
+import Example from "./Example.vue"
+import SavedFlows from "./SavedFlows.vue"
 
-}
+import { useFlowConfigStore } from "@/stores/flowconfigure";
 
-const xmlText = ref<string>("")
-const csv = ref<ParseResult<unknown>>()
-const hasHeaders = ref<boolean>(false)
-const currentFlowItems = ref<Array<FlowItem>>([])
+
+// const xmlText = ref<string>("")
+// const csv = ref<ParseResult<unknown>>()
+// const hasHeaders = ref<boolean>(false)
+// const currentFlowItems = ref<Array<FlowItem>>([])
+const configStore = useFlowConfigStore()
 
 async function downloadText(content: string, filename: string) {
     const link = document.createElement("a")
@@ -33,16 +30,17 @@ const processFiles = {
         const files = (e.target as HTMLInputElement).files
         if (files && files.length) {
             const text = await files[0].text()
-            xmlText.value = text
+            configStore.xmlText = text
             console.log(text)
-            console.log(toRaw(xmlText.value))
+            console.log(toRaw(configStore.xmlText))
         }
     },
     csv: async function (e: Event) {
         const files = (e.target as HTMLInputElement).files
         if (files && files.length) {
-            csv.value = Papa.parse(await files[0].text())
-            console.log(toRaw(csv.value.data))
+            const csvText = await files[0].text()
+            configStore.setCSV(Papa.parse(csvText), csvText)
+            console.log(toRaw(configStore.csvObj))
         }
 
     }
@@ -51,7 +49,7 @@ const processFiles = {
 
 const flowItems = {
     new: function() {
-        currentFlowItems.value.push({
+        configStore.currentFlowItems.push({
             selector: "",
             operateOn: "id",
             action: "replace",
@@ -67,8 +65,10 @@ const flowItems = {
 
 <template>
     <div class="container">
-        <div class="flows"></div>
-        <div class="setup">
+        <div class="flows pane">
+            <SavedFlows></SavedFlows>
+        </div>
+        <div class="setup pane">
             <span class="step">Step 1)</span>
             <span>Select a base <strong>XML</strong> configuration file</span>
             <input type="file" @change="processFiles.xml" />
@@ -78,57 +78,15 @@ const flowItems = {
             <span class="step">Step 3)</span>
             <span>Configure a flow for editing the XML data</span>
 
+            <span v-if="configStore.currentFlowItems[0]">{{ configStore.currentFlowItems[0].selector }}</span>
+            <FlowItem v-for="(flowItem, i) of configStore.currentFlowItems" :index="i"></FlowItem>
+
             <button @click="flowItems.new">Add flow item</button>
-            <div class="flowItem" v-for="(flowItem, i) of currentFlowItems">
-                <div class="inputGroup">
-                    <span>CSS Selector:</span>
-                    <input type="text" v-model="flowItem.selector" />
-                </div>
-                <div class="inputGroup">
-                    <span>Operate on:</span>
-                    <select v-model="flowItem.operateOn">
-                        <option value="value">Value</option>
-                        <option value="id">ID</option>
-                        <option value="name">Name</option>
-                    </select>
-                </div>
-                <div class="inputGroup">
-                    <span>Action:</span>
-                    <select v-model="flowItem.action">
-                        <option value="replace">Replace</option>
-                        <option value="remove">Remove</option>
-                    </select>
-                </div>
-                <div v-if="flowItem.action == 'replace'" class="inputGroup">
-                    <span>Replace with:</span>
-                    <select v-model="flowItem.with">
-                        <option value="column">Column value</option>
-                        <option value="dt">Date or time</option>
-                        <option value="static">Static value</option>
-                    </select>
-                </div>
-                <div v-if="flowItem.with == 'column' && flowItem.action != 'remove'" class="inputGroup">
-                    <span>Column:</span>
-                    <select v-model="flowItem.column">
-                        <option value="0">0</option>
-                    </select>
-                </div>
-                <div v-if="flowItem.with == 'dt' && flowItem.action != 'remove'" class="inputGroup">
-                    <span>Format:</span>
-                    <input type="text" v-model="flowItem.dtformat" />
-                </div>
-                <div v-if="flowItem.with == 'static' && flowItem.action != 'remove'" class="inputGroup">
-                    <span>Static value:</span>
-                    <input type="text" v-model="flowItem.value" />
-                </div>
-            </div>
 
             <button @click="downloadText('This is some awesome content', 'awesome.xml')">Test Downloading Something</button>
         </div>
-        <div class="example">
-            <div>
-                <highlightjs :code="xmlText" />
-            </div>
+        <div class="example pane">
+            <Example></Example>
         </div>
     </div>
 </template>
@@ -143,9 +101,18 @@ const flowItems = {
     grid-template-areas: "flows setup example";
     height: 100%;
 }
+.container .pane {
+    border: .5px solid var(--borderGray);
+    border-left: 0px;
+}
 
 .flows {
     grid-area: flows;
+    background-color: var(--codeBG);
+}
+
+.flows div {
+    height: 100%;
 }
 
 .setup {

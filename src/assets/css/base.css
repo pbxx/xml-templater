@@ -3,6 +3,8 @@
   --themeColorLight: #78d98b;
   --themeColorDark: #428f52;
   --bodyBG: #111111;
+  --codeBG: #090909;
+  --borderGray: #2d2d2d;
 }
 
 * {
@@ -113,9 +115,3 @@ button:hover {
   /* color: var(--bodyBG); */
 }
 
-pre .hljs {
-  overflow-x: visible!important;
-}
-pre, .hljs {
-  min-height: 100%;
-}
