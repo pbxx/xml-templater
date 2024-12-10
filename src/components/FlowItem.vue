@@ -18,9 +18,17 @@ const props = defineProps<Props>()
             <div class="left">Step {{ props.index + 1 }}</div>
             <div class="right" @click="configStore.currentFlowItems.splice(props.index, 1)"><button class="danger">Delete</button></div>
         </div>
+        
         <div class="inputGroup">
             <span>CSS Selector:</span>
             <input type="text" v-model="configStore.currentFlowItems[props.index].selector" />
+        </div>
+        <div class="inputGroup">
+            <span>Action:</span>
+            <select v-model="configStore.currentFlowItems[props.index].action">
+                <option value="replace">Replace</option>
+                <option value="remove">Remove</option>
+            </select>
         </div>
         <div class="inputGroup">
             <span>Operate on:</span>
@@ -30,13 +38,7 @@ const props = defineProps<Props>()
                 <option value="name">Name</option>
             </select>
         </div>
-        <div class="inputGroup">
-            <span>Action:</span>
-            <select v-model="configStore.currentFlowItems[props.index].action">
-                <option value="replace">Replace</option>
-                <option value="remove">Remove</option>
-            </select>
-        </div>
+        
         <div v-if="configStore.currentFlowItems[props.index].action == 'replace'" class="inputGroup">
             <span>Replace with:</span>
             <select v-model="configStore.currentFlowItems[props.index].with">
