@@ -81,7 +81,7 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 	}
 	async function downloadAll() {
 		if (csvObj.value && Array.isArray(csvObj.value.data)) {
-			for (var i=0; i < csvObj.value.data.length; i++) {
+			for (var i=hasHeaders? 1 : 0; i < csvObj.value.data.length; i++) {
 				downloadRow(i)
 			}
 		}

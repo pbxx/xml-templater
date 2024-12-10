@@ -51,9 +51,10 @@ const props = defineProps<Props>()
         </div>
         <div v-if="configStore.currentFlowItems[props.index].with == 'column' && configStore.currentFlowItems[props.index].action != 'remove'" class="inputGroup">
             <span>Column:</span>
-            <select v-model="configStore.currentFlowItems[props.index].column">
+            <!-- <select v-model="configStore.currentFlowItems[props.index].column">
                 <option value="0">0</option>
-            </select>
+            </select> -->
+            <input type="number" v-model="configStore.currentFlowItems[props.index].column" min="0" max="100"/>
         </div>
         <div v-if="configStore.currentFlowItems[props.index].with == 'dt' && configStore.currentFlowItems[props.index].action != 'remove'" class="inputGroup">
             <span>Format:</span>
