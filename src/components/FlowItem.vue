@@ -30,15 +30,17 @@ const props = defineProps<Props>()
                 <option value="remove">Remove</option>
             </select>
         </div>
-        <div class="inputGroup">
+        <div v-if="configStore.currentFlowItems[props.index].action == 'replace'" class="inputGroup">
             <span>Operate on:</span>
             <select v-model="configStore.currentFlowItems[props.index].operateOn">
-                <option value="value">Value</option>
-                <option value="id">ID</option>
-                <option value="name">Name</option>
+                <option value="content">Content</option>
+                <option value="attr">Attribute</option>
             </select>
         </div>
-        
+        <div  v-if="configStore.currentFlowItems[props.index].action == 'replace' && configStore.currentFlowItems[props.index].operateOn == 'attr'" class="inputGroup">
+            <span>Attribute:</span>
+            <input type="text" v-model="configStore.currentFlowItems[props.index].attribute" />
+        </div>
         <div v-if="configStore.currentFlowItems[props.index].action == 'replace'" class="inputGroup">
             <span>Replace with:</span>
             <select v-model="configStore.currentFlowItems[props.index].with">

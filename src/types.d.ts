@@ -1,10 +1,11 @@
 interface FlowItem {
     selector: string
-    operateOn: "value" | "id" | "name"
+    operateOn: "content" | "attr"
     action: "replace" | "remove"
+    attribute: string
     with: "column" | "dt" | "static"
-    column?: number
-    value?: string
-    dtformat?: string
+    column: number
+    value: string
+    dtformat: string
 
 }

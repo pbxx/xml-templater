@@ -10,6 +10,28 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 	const currentFlowItems = ref<Array<FlowItem>>([])
 	const exampleRender = ref<string>("")
 	const exampleIndex = ref<number>(0)
+	const nameByColumn = ref<number>(0)
+	const filenameRef = ref<string>("")
+
+	function updateName() {
+		if (csvObj.value) {
+			// csv loaded
+			// locate row
+			if (Array.isArray(csvObj.value.data)) {
+				const row = csvObj.value.data[exampleIndex.value]
+				if (Array.isArray(row)) {
+					// thanks typescript
+					// locate column within row
+					const val = row[nameByColumn.value]
+					return (filenameRef.value = val)
+				} else {
+					return "csv error in column"
+				}
+			} else {
+				return "csv error in row"
+			}
+		}
+	}
 
 	// const doubleCount = computed(() => count.value * 2)
 	function setCSV(csv: ParseResult<unknown>, text: string) {
@@ -18,21 +40,34 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 	}
 	function setXML(text: string) {
 		xmlText.value = text
+		// exampleIndex.value = hasHeaders.value? 1 : 0
+	}
+
+	async function downloadExample() {
+		const link = document.createElement("a")
+		const file = new Blob([exampleRender.value], { type: "text/plain" })
+		link.href = URL.createObjectURL(file)
+		const filename = `config_${filenameRef.value}.xml`
+		link.download = filename
+		link.click()
+
+		URL.revokeObjectURL(link.href)
+		link.remove()
 	}
 
 	function renderXML(index?: number): string {
 		// render XML at current index with current flow items
 		const parser = new DOMParser()
 		const doc = parser.parseFromString(xmlText.value, "application/xml")
+		updateName()
 
 		for (var item of currentFlowItems.value) {
 			// apply each flow item
-            var elem = null
+			var elem = null
 			const errorNode = doc.querySelector("parsererror")
 			if (errorNode) {
 				console.log("error while parsing")
 			} else {
-				
 				try {
 					elem = doc.querySelector(item.selector)
 					// console.log(elem? elem : "No item found")
@@ -40,7 +75,7 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 					// console.log("No item found")
 				}
 			}
-			console.log(elem? true : false)
+			console.log(elem ? true : false)
 			if (elem) {
 				// found item at provided selector
 				function getReplaceData() {
@@ -51,7 +86,8 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 								// csv loaded
 								// locate row
 								if (Array.isArray(csvObj.value.data)) {
-									const row = csvObj.value.data[index || exampleIndex.value]
+									const k = index || exampleIndex.value
+									const row = csvObj.value.data[k]
 									if (Array.isArray(row)) {
 										// thanks typescript
 										// locate column within row
@@ -64,44 +100,40 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 									return "csv error in row"
 								}
 							}
-                            break
+							break
 						}
 						case "dt": {
 							// return current date and time
 							return "coming soon..."
-                            break
+							break
 						}
 						case "static": {
 							return item.value
-                            break
+							break
 						}
 					}
 				}
 				switch (item.operateOn) {
-					case "value": {
-                        console.log(item.operateOn)
+					case "content": {
+						console.log(item.operateOn)
 						if (item.action == "replace") {
 							elem.innerHTML = getReplaceData()
 						} else {
-                            elem.remove()
-                        }
-                        break
+							elem.remove()
+						}
+						break
 					}
-					case "id": {
-                        if (item.action == "replace") {
-							elem.setAttribute("id", getReplaceData())
+					case "attr": {
+						if (item.action == "replace") {
+							if (item.attribute != "") {
+								try {
+									elem.setAttribute(item.attribute, getReplaceData())
+								} catch (e) {}
+							}
 						} else {
-                            elem.remove()
-                        }
-                        break
-					}
-					case "name": {
-                        if (item.action == "replace") {
-							elem.setAttribute("name", getReplaceData())
-						} else {
-                            elem.remove()
-                        }
-                        break
+							elem.remove()
+						}
+						break
 					}
 				}
 			}
@@ -112,5 +144,5 @@ export const useFlowConfigStore = defineStore("flowconfig", () => {
 		return modified
 	}
 
-	return { xmlText, csvObj, hasHeaders, currentFlowItems, setCSV, setXML, renderXML, exampleRender, exampleIndex }
+	return { xmlText, csvObj, hasHeaders, currentFlowItems, setCSV, setXML, renderXML, exampleRender, exampleIndex, downloadExample }
 })

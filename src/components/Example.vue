@@ -19,6 +19,11 @@ const props = defineProps<Props>()
 
 <template>
     <div>
+        <button @click="configStore.exampleIndex--">Prev Row</button>
+        <button @click="configStore.exampleIndex++">Next Row</button>
+        <button @click="configStore.downloadExample()">Download</button>
+    </div>
+    <div>
         <highlightjs :code="configStore.exampleRender" />
     </div>
     <div>
@@ -37,7 +42,17 @@ const props = defineProps<Props>()
     background-color: var(--codeBG);
 }
 
-.example div {
+.example div:nth-child(1) {
+    padding: 7px;
+    display: flex;
+    overflow: auto;
+}
+.example div:nth-child(1) button {
+    margin-right: 2px;
+    border-radius: 3px;
+    padding: 2px 6px;
+}
+.example div:not(:nth-child(1)) {
     height: 50%;
     padding: 12px;
 

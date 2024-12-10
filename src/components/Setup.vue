@@ -54,7 +54,8 @@ const flowItems = {
     new: function() {
         configStore.currentFlowItems.push({
             selector: "",
-            operateOn: "value",
+            operateOn: "content",
+            attribute: "",
             action: "replace",
             with: "column",
             column: 0,
@@ -78,10 +79,13 @@ const flowItems = {
             <span class="step">Step 2)</span>
             <span>Select a <strong>CSV</strong> file to get data from</span>
             <input type="file" @change="processFiles.csv" />
+            <div class="checkboxBox">
+                <input type="checkbox" v-model="configStore.hasHeaders">My data has headers
+            </div>
+            
             <span class="step">Step 3)</span>
             <span>Configure a flow for editing the XML data</span>
 
-            <span v-if="configStore.currentFlowItems[0]">{{ configStore.currentFlowItems[0].selector }}</span>
             <FlowItem v-for="(flowItem, i) of configStore.currentFlowItems" :index="i"></FlowItem>
 
             <button @click="flowItems.new">Add flow item</button>
@@ -152,6 +156,17 @@ button {
 }
 .setup > *:nth-last-child(2) {
     margin-bottom: 48px;
+}
+
+/* for checkboxes */
+.setup.pane > div {
+    display: flex;
+}
+.checkboxBox {
+    font-size: .9rem;
+}
+.checkboxBox > * {
+    margin-right: 8px;
 }
 
 .step {

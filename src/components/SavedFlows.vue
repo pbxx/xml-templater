@@ -13,11 +13,15 @@ const props = defineProps<Props>()
 </script>
 
 <template>
-    <div>
-        
+    <div class="savedFlows">
+        <span>Saved flows coming soon...</span>
     </div>
 </template>
 
 <style>
-
+    .savedFlows {
+        color: #fff5;
+        padding: 11px;
+        font-style: italic;
+    }
 </style>
